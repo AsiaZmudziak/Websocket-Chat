@@ -5,7 +5,12 @@ const addMessageForm = document.getElementById('add-messages-form'); //reference
 const userNameInput = document.getElementById('username'); //reference to text field from the login form
 const messageContentInput = document.getElementById('message-content'); //reference to text field of the form for sending a message
 
+const socket = io();
+
 let userName = ''; //global variable - user login
+
+socket.on('message', addMessage);
+socket.on('message', ({ author, content }) => addMessage(author, content));
 
 //login form
 
@@ -46,10 +51,13 @@ const addMessage = (author, content) => {
 const sendMessage = event => {
   event.preventDefault();
 
-  if (messageContentInput.value === '') {
+  let messageContent = messageContentInput.value;
+
+  if (!messageContent.length) {
     alert('Enter your message');
   } else {
-    addMessage(userName, messageContentInput.value);
+    addMessage(userName, messageContent);
+    socket.emit('message', { author: userName, content: messageContent });
     messageContentInput.value = '';
   }
 };
