@@ -1,5 +1,5 @@
 {
-  "name": "Websocket-Chat",
+  "name": "WebsocketChat",
   "version": "1.0.0",
   "main": "server.js",
   "repository": "https://github.com/AsiaZmudziak/Websocket-Chat.git",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "express": "4.17.1",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "socket.io": "2.2.0"
   }
 }

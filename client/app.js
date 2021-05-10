@@ -1,3 +1,5 @@
+const socket = io();
+
 const loginForm = document.getElementById('welcome-form'); //reference to login form
 const messagesSection = document.getElementById('messages-section'); //reference to messages section
 const messagesList = document.getElementById('messages-list'); //reference to messages list
@@ -5,11 +7,8 @@ const addMessageForm = document.getElementById('add-messages-form'); //reference
 const userNameInput = document.getElementById('username'); //reference to text field from the login form
 const messageContentInput = document.getElementById('message-content'); //reference to text field of the form for sending a message
 
-const socket = io();
-
 let userName = ''; //global variable - user login
 
-socket.on('message', addMessage);
 socket.on('message', ({ author, content }) => addMessage(author, content));
 
 //login form
@@ -17,10 +16,12 @@ socket.on('message', ({ author, content }) => addMessage(author, content));
 const login = event => {
   event.preventDefault();
 
-  if (userNameInput.value === '') {
+  let name = userNameInput.value;
+
+  if (!name.length) {
     alert('Enter your name');
   } else {
-    userName = userNameInput.value;
+    userName = name;
     loginForm.classList.remove('show');
     messagesSection.classList.add('show');
   }
