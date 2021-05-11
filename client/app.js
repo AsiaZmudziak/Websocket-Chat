@@ -10,6 +10,8 @@ const messageContentInput = document.getElementById('message-content'); //refere
 let userName = ''; //global variable - user login
 
 socket.on('message', ({ author, content }) => addMessage(author, content));
+socket.on('join', name => addMessage('Chat Bot', `<i><b>${name}</b> has joined the conversation!</i>`));
+socket.on('leave', name => addMessage('Chat Bot', `<i><b>${name}</b> has left the conversation...</i>`));
 
 //login form
 

@@ -4,7 +4,7 @@ const app = express();
 const socket = require('socket.io');
 
 const messages = [];
-const users = [];
+let users = [];
 
 app.use(express.static(path.join(__dirname + '/client')));
 
@@ -23,9 +23,11 @@ io.on('connection', socket => {
 
   socket.on('join', user => {
     console.log("Oh, I've got a new user logged in - " + user);
+
     const newUser = { name: user, id: socket.id };
     users.push(newUser);
-    console.log('users:', users);
+
+    socket.broadcast.emit('join', newUser.name);
   });
 
   socket.on('message', message => {
@@ -33,16 +35,16 @@ io.on('connection', socket => {
     messages.push(message);
     socket.broadcast.emit('message', message);
   });
+
   socket.on('disconnect', () => {
     console.log('Oh, socket ' + socket.id + ' has left');
-    const deleteUser = (user, allUsers) => {
-      if (user.id === socket.id) {
-        users.splice(allUsers, 1);
-      }
-    };
-    users.some(deleteUser);
-    console.log('users:', users);
+
+    const leavingUser = users.find(user => user.id === socket.id);
+
+    users = users.filter(user => user.id !== socket.id);
+
+    socket.broadcast.emit('leave', leavingUser.name);
   });
-  
+
   console.log("I've added a listener on message event \n");
 });
