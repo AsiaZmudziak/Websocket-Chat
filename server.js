@@ -4,6 +4,7 @@ const app = express();
 const socket = require('socket.io');
 
 const messages = [];
+const users = [];
 
 app.use(express.static(path.join(__dirname + '/client')));
 
@@ -19,6 +20,14 @@ const io = socket(server);
 
 io.on('connection', socket => {
   console.log('New client! Its id – ' + socket.id);
+
+  socket.on('join', user => {
+    console.log("Oh, I've got a new user logged in - " + user);
+    const newUser = { name: user, id: socket.id };
+    users.push(newUser);
+    console.log('users:', users);
+  });
+
   socket.on('message', message => {
     console.log("Oh, I've got something from " + socket.id);
     messages.push(message);
@@ -26,6 +35,14 @@ io.on('connection', socket => {
   });
   socket.on('disconnect', () => {
     console.log('Oh, socket ' + socket.id + ' has left');
+    const deleteUser = (user, allUsers) => {
+      if (user.id === socket.id) {
+        users.splice(allUsers, 1);
+      }
+    };
+    users.some(deleteUser);
+    console.log('users:', users);
   });
+  
   console.log("I've added a listener on message event \n");
 });

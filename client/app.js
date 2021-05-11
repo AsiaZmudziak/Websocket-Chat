@@ -22,6 +22,7 @@ const login = event => {
     alert('Enter your name');
   } else {
     userName = name;
+    socket.emit('join', userName);
     loginForm.classList.remove('show');
     messagesSection.classList.add('show');
   }
